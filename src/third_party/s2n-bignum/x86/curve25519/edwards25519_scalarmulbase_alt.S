@@ -2370,6 +2370,14 @@ Ledwards25519_scalarmulbase_alt_midloop:
         mul_p25519(resx,x_3,w_3)
         mul_p25519(resy,y_3,w_3)
 
+// Clear the secret scalar and temporaries before releasing the scratch frame.
+// RDI is caller-saved in the standard ABI and restored by the Windows wrapper.
+
+        xor     eax, eax
+        mov     ecx, NSPACE/8
+        mov     rdi, rsp
+        rep stosq
+
 // Restore stack and registers
 
         CFI_INC_RSP(NSPACE)

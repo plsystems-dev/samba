@@ -16,3 +16,12 @@ $(call make-fuzz-test,fuzz_ed25519_verify,fuzz_ed25519_verify,fd_ballet fd_util)
 $(call make-fuzz-test,fuzz_ed25519_sigverify,fuzz_ed25519_sigverify,fd_ballet fd_util)
 $(call make-fuzz-test,fuzz_ed25519_sigverify_diff,fuzz_ed25519_sigverify_diff,fd_ballet fd_util)
 endif
+
+ifdef FD_HAS_LINUX
+ifdef FD_HAS_X86
+ifdef FD_HAS_S2NBIGNUM
+$(call make-unit-test,test_s2n_signing_stack,test_s2n_signing_stack test_s2n_signing_stack_asm,fd_ballet fd_util)
+$(call run-unit-test,test_s2n_signing_stack)
+endif
+endif
+endif

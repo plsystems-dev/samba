@@ -2,8 +2,10 @@
   "date_utc": "2026-09-28",
   "base_commit": "eed6c122a9756fc1f6e5021a636a3d6961a76952",
   "hardware": "AMD EPYC 7443 (Zen 3), 24 physical / 48 logical CPUs",
-  "compiler": "GCC 13.3.0",
-  "build_target": "linux_gcc_zen3",
+  "compilers": {
+    "gcc": "GCC 13.3.0, linux_gcc_zen3",
+    "clang": "Clang 18.1.3, linux_clang_zen3"
+  },
   "cpu": 3,
   "cpu_smt_sibling": 27,
   "cpu_smt_sibling_state": "offline before and during tests",
@@ -12,74 +14,246 @@
   "rounds": 5,
   "iterations_per_message_size_per_round": 25000,
   "fixtures_per_message_size": 64,
-  "alternating_variant_order": true,
+  "order": "GCC pairs alternate order; three-variant Clang comparison rotates and reverses order",
   "full_api_differential_cases": 768,
   "full_api_differential_match": true,
-  "sanitizers": "Clang 18.1.3 AddressSanitizer + UndefinedBehaviorSanitizer; all tests passed",
+  "differential_digests": [
+    "DIFF bytes=128 fixtures=64 input_digest=a68707bdbed6a9a7 result_digest=398b7770ffb9b497 ok=64 err_sig=13 err_pubkey=39 err_msg=140",
+    "DIFF bytes=512 fixtures=64 input_digest=86dba8e291fc97c1 result_digest=340473dfaff72eda ok=64 err_sig=19 err_pubkey=29 err_msg=144",
+    "DIFF bytes=1232 fixtures=64 input_digest=3b244fc05d3cd0ba result_digest=47c371f7434aeeea ok=64 err_sig=18 err_pubkey=34 err_msg=140"
+  ],
   "field_input_sets": 20657,
-  "results": [
+  "tests": [
+    "test_f25519_avx2",
+    "test_ed25519",
+    "test_ed25519_signature_malleability",
+    "test_x25519",
+    "test_ristretto255"
+  ],
+  "test_builds": [
+    "GCC 13.3.0 optimized",
+    "Clang 18.1.3 optimized",
+    "Clang 18.1.3 AddressSanitizer + UndefinedBehaviorSanitizer"
+  ],
+  "all_tests_passed": true,
+  "comparisons": [
     {
-      "message_bytes": 128,
-      "scalar_ns": [
-        43620.843,
-        43636.292,
-        43657.335,
-        43867.748,
-        43764.939
-      ],
-      "avx2_ns": [
-        42427.579,
-        42408.292,
-        42355.677,
-        42336.968,
-        42374.157
-      ],
-      "scalar_median_ns": 43657.335,
-      "avx2_median_ns": 42374.157,
-      "latency_reduction_pct": 2.939,
-      "throughput_gain_pct": 3.028
+      "comparison": "gcc-avx2-vs-gcc-scalar",
+      "results": [
+        {
+          "message_bytes": 128,
+          "baseline_ns": [
+            43646.223,
+            43616.213,
+            43643.191,
+            43606.309,
+            43603.211
+          ],
+          "candidate_ns": [
+            39287.001,
+            39302.384,
+            39403.273,
+            39270.947,
+            39278.919
+          ],
+          "baseline_median_ns": 43616.213,
+          "candidate_median_ns": 39287.001,
+          "latency_reduction_pct": 9.926,
+          "throughput_gain_pct": 11.019
+        },
+        {
+          "message_bytes": 512,
+          "baseline_ns": [
+            43949.577,
+            43943.81,
+            43947.601,
+            43932.812,
+            43925.827
+          ],
+          "candidate_ns": [
+            39618.392,
+            39587.592,
+            39879.106,
+            39608.236,
+            39745.555
+          ],
+          "baseline_median_ns": 43943.81,
+          "candidate_median_ns": 39618.392,
+          "latency_reduction_pct": 9.843,
+          "throughput_gain_pct": 10.918
+        },
+        {
+          "message_bytes": 1232,
+          "baseline_ns": [
+            44823.132,
+            44826.629,
+            44841.357,
+            44803.507,
+            44799.647
+          ],
+          "candidate_ns": [
+            40522.3,
+            40444.771,
+            40647.221,
+            40504.337,
+            40563.847
+          ],
+          "baseline_median_ns": 44823.132,
+          "candidate_median_ns": 40522.3,
+          "latency_reduction_pct": 9.595,
+          "throughput_gain_pct": 10.613
+        }
+      ]
     },
     {
-      "message_bytes": 512,
-      "scalar_ns": [
-        43977.719,
-        43984.017,
-        43993.111,
-        44172.328,
-        44095.657
-      ],
-      "avx2_ns": [
-        42604.369,
-        42544.815,
-        42423.032,
-        42471.132,
-        42525.72
-      ],
-      "scalar_median_ns": 43993.111,
-      "avx2_median_ns": 42525.72,
-      "latency_reduction_pct": 3.336,
-      "throughput_gain_pct": 3.451
+      "comparison": "clang-avx2-vs-gcc-scalar",
+      "results": [
+        {
+          "message_bytes": 128,
+          "baseline_ns": [
+            43619.093,
+            43649.711,
+            43647.211,
+            43629.472,
+            43656.665
+          ],
+          "candidate_ns": [
+            36921.084,
+            36912.935,
+            37029.149,
+            36885.315,
+            36903.709
+          ],
+          "baseline_median_ns": 43647.211,
+          "candidate_median_ns": 36912.935,
+          "latency_reduction_pct": 15.429,
+          "throughput_gain_pct": 18.244
+        },
+        {
+          "message_bytes": 512,
+          "baseline_ns": [
+            43950.048,
+            43955.331,
+            43908.158,
+            43979.263,
+            43938.758
+          ],
+          "candidate_ns": [
+            37272.956,
+            37290.441,
+            37346.783,
+            37278.608,
+            37260.191
+          ],
+          "baseline_median_ns": 43950.048,
+          "candidate_median_ns": 37278.608,
+          "latency_reduction_pct": 15.18,
+          "throughput_gain_pct": 17.896
+        },
+        {
+          "message_bytes": 1232,
+          "baseline_ns": [
+            44774.26,
+            44827.294,
+            44812.849,
+            44815.603,
+            44830.494
+          ],
+          "candidate_ns": [
+            38105.207,
+            38076.506,
+            38213.599,
+            38105.105,
+            38098.25
+          ],
+          "baseline_median_ns": 44815.603,
+          "candidate_median_ns": 38105.105,
+          "latency_reduction_pct": 14.974,
+          "throughput_gain_pct": 17.61
+        }
+      ]
     },
     {
-      "message_bytes": 1232,
-      "scalar_ns": [
-        44850.016,
-        44839.63,
-        44838.698,
-        45013.303,
-        44918.695
-      ],
-      "avx2_ns": [
-        43366.209,
-        43315.075,
-        43359.043,
-        43397.01,
-        43357.31
-      ],
-      "scalar_median_ns": 44850.016,
-      "avx2_median_ns": 43359.043,
-      "latency_reduction_pct": 3.324,
-      "throughput_gain_pct": 3.439
+      "comparison": "clang-avx2-vs-clang-scalar",
+      "results": [
+        {
+          "message_bytes": 128,
+          "baseline_ns": [
+            45018.891,
+            45075.844,
+            45044.157,
+            45431.652,
+            45283.921
+          ],
+          "candidate_ns": [
+            36921.084,
+            36912.935,
+            37029.149,
+            36885.315,
+            36903.709
+          ],
+          "baseline_median_ns": 45075.844,
+          "candidate_median_ns": 36912.935,
+          "latency_reduction_pct": 18.109,
+          "throughput_gain_pct": 22.114
+        },
+        {
+          "message_bytes": 512,
+          "baseline_ns": [
+            45385.816,
+            45380.307,
+            45387.528,
+            45729.748,
+            45748.599
+          ],
+          "candidate_ns": [
+            37272.956,
+            37290.441,
+            37346.783,
+            37278.608,
+            37260.191
+          ],
+          "baseline_median_ns": 45387.528,
+          "candidate_median_ns": 37278.608,
+          "latency_reduction_pct": 17.866,
+          "throughput_gain_pct": 21.752
+        },
+        {
+          "message_bytes": 1232,
+          "baseline_ns": [
+            46237.796,
+            46266.526,
+            46224.098,
+            46600.348,
+            46508.413
+          ],
+          "candidate_ns": [
+            38105.207,
+            38076.506,
+            38213.599,
+            38105.105,
+            38098.25
+          ],
+          "baseline_median_ns": 46266.526,
+          "candidate_median_ns": 38105.105,
+          "latency_reduction_pct": 17.64,
+          "throughput_gain_pct": 21.418
+        }
+      ]
     }
-  ]
+  ],
+  "source_sha256": {
+    "src/ballet/ed25519/avx2/fd_f25519_batch.h": "67f118c9d3554626ec8ae081d9d067bfea07e9640fa4a8b5423a0407ca631e53",
+    "src/ballet/ed25519/ref/fd_f25519.h": "7185a8f5729fca0929676283d35fb1753cd4d468d707c4c0fb11718120a799c7",
+    "src/ballet/ed25519/ref/fd_curve25519_secure.c": "d7ef9f33ed16c579fa4e873df16fd1930061fc21853e7bbf5fb49ceb329de860"
+  },
+  "binary_sha256": {
+    "gcc-scalar": "a2e15be593f0d79b969670b18e89af0e1747ae97c423530deedc22924b4abe2c",
+    "gcc-avx2": "56681c4bc2a480352c5f50d382bbde618bbd0390554e105044d8a13a1f3413a3",
+    "clang-scalar": "2549431597ee3236b0506b56ca559ca63324f1502547a831d5dbb5aa0bc045d9",
+    "clang-avx2": "4178283971cfb2620e58cafc184be603916e94eb49e07a3f0a4e1f9852166a11"
+  },
+  "production_deployed": false,
+  "full_validator_build_tested": false,
+  "scope": "Single-core crypto microbenchmarks; no validator throughput or voting improvement measured."
 }
